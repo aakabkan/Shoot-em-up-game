@@ -19,7 +19,7 @@ public class SpaceDelete{
     }
     String chosenFile = JOptionPane.showInputDialog(null, "Which of the following saves do you want to delete? \n\n" + saveNames);
     if (chosenFile != null){
-      File loadFile = new File(chosenFile + ".sg");
+      File loadFile = new File("./saves\\" + chosenFile + ".sg");
       if (loadFile.isFile()){
         int ans = JOptionPane.showConfirmDialog(null, null, "Are you sure you want to delete " + chosenFile + "?", JOptionPane.YES_NO_CANCEL_OPTION);
         if (ans==0){
@@ -54,7 +54,7 @@ public class SpaceDelete{
       writer.write(saves);
       writer.close();
       reader.close();
-      File file = new File(filename + ".sg");
+      File file = new File("./saves\\" + filename + ".sg");
       file.delete();
   }
 }
