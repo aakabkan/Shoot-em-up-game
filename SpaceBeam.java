@@ -3,8 +3,8 @@ public class SpaceBeam extends SpaceObject{
   public static final int width = 10;
   public int light;
 
-  public SpaceBeam(SpaceGameMain main){
-    x = main.frameSizeX;
+  public SpaceBeam(SpaceController control){
+    x = control.frameSizeX;
   }
 
   public SpaceBeam(int x){

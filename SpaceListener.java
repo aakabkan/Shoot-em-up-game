@@ -8,41 +8,41 @@ import javax.swing.JOptionPane.*;
 import java.text.*;
 
 public class SpaceListener implements ActionListener, KeyListener{
-  private SpaceGameMain main;
+  private SpaceController control;
   private SpaceSave save;
   private SpaceLoad load;
   public SpaceDelete delete;
 
-  public SpaceListener(SpaceGameMain main){
-    this.main = main;
-    save = new SpaceSave(main);
-    load = new SpaceLoad(main);
-    delete = new SpaceDelete(main);
+  public SpaceListener(SpaceController control){
+    this.control = control;
+    save = new SpaceSave(control);
+    load = new SpaceLoad(control);
+    delete = new SpaceDelete(control);
   }
 
   public void keyPressed(KeyEvent e){
     int key = e.getKeyCode();
-    if (!main.gameEnded && main.area.updated){
+    if (!control.gameEnded && control.area.updated){
       if (key == KeyEvent.VK_UP) {//move our space ship up
-        if (main.area.us.getY()>main.area.step+main.area.shipSize/3){
-          main.area.us.setY(main.area.us.getY()-main.area.step);
-          main.area.updated = false;
+        if (control.area.us.getY()>control.area.step+control.area.shipSize/3){
+          control.area.us.setY(control.area.us.getY()-control.area.step);
+          control.area.updated = false;
         }
       }
       else if (key == KeyEvent.VK_DOWN) {//move our space ship down
-        if (main.area.us.getY()<main.frameSizeY-2*main.area.shipSize/3-main.area.step){
-          main.area.us.setY(main.area.us.getY()+main.area.step);
-          main.area.updated = false;
+        if (control.area.us.getY()<control.frameSizeY-2*control.area.shipSize/3-control.area.step){
+          control.area.us.setY(control.area.us.getY()+control.area.step);
+          control.area.updated = false;
         }
       }
       else if (key == KeyEvent.VK_RIGHT) {//move our space ship forward
-        main.area.step*=4;
-        main.spaceCanvas.repaint();
-        main.area.step/=4;
+        control.area.step*=4;
+        control.spaceCanvas.repaint();
+        control.area.step/=4;
       }
       else if (key == KeyEvent.VK_SPACE) {//here we shoot
-        main.area.shots.add(new SpaceArtifact(main.area.us.getX()+main.area.shipSize,main.area.us.getY()));
-        main.area.updated = false;
+        control.area.shots.add(new SpaceArtifact(control.area.us.getX()+control.area.shipSize,control.area.us.getY()));
+        control.area.updated = false;
       }
       else if (key == KeyEvent.VK_F2){
         stopTimer();
@@ -71,7 +71,7 @@ public class SpaceListener implements ActionListener, KeyListener{
     else if (key == KeyEvent.VK_ENTER){
       pauseGame();
     }
-    main.spaceCanvas.requestFocus();
+    control.spaceCanvas.requestFocus();
   }
   public void keyReleased(KeyEvent e){}
   public void keyTyped(KeyEvent e){}
@@ -79,46 +79,46 @@ public class SpaceListener implements ActionListener, KeyListener{
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     stopTimer();
-    if (source.equals(main.itHow)){
+    if (source.equals(control.itHow)){
       howToPlay();
     }
-    else if (source.equals(main.newGame) || source.equals(main.itNew)){
+    else if (source.equals(control.newGame) || source.equals(control.itNew)){
       newGame();
     }
-    else if (source.equals(main.pauseBut) || source.equals(main.itNew)){
+    else if (source.equals(control.pauseBut) || source.equals(control.itNew)){
       pauseGame();
     }
-    else if (source.equals(main.saveBut) || source.equals(main.itQSave)){
+    else if (source.equals(control.saveBut) || source.equals(control.itQSave)){
       save.saveGame();
     }
-    else if (source.equals(main.saveAsBut) || source.equals(main.itSave)){
+    else if (source.equals(control.saveAsBut) || source.equals(control.itSave)){
       save.saveAs();
     }
-    else if (source.equals(main.loadBut) || source.equals(main.itLoad)){
+    else if (source.equals(control.loadBut) || source.equals(control.itLoad)){
       load.loadGame();
     }
-    else if (source.equals(main.qLoadBut) || source.equals(main.itQLoad)){
+    else if (source.equals(control.qLoadBut) || source.equals(control.itQLoad)){
       load.quickLoad();
     }
-    else if (source.equals(main.itDelete)){
+    else if (source.equals(control.itDelete)){
       try{
         delete.askForDelete();
       }
       catch (IOException ex){}
     }
     restartTimer();
-    main.spaceCanvas.requestFocus();
+    control.spaceCanvas.requestFocus();
   }
 
   public void stopTimer(){
-    if (main.pauseBut.getText().equals("Pause")){
-      main.timer.stop();
+    if (control.pauseBut.getText().equals("Pause")){
+      control.timer.stop();
     }
   }
 
   public void restartTimer(){
-    if (main.pauseBut.getText().equals("Pause") && !main.gameEnded){
-      main.timer.restart();
+    if (control.pauseBut.getText().equals("Pause") && !control.gameEnded){
+      control.timer.restart();
     }
   }
 
@@ -127,28 +127,28 @@ public class SpaceListener implements ActionListener, KeyListener{
   }
 
   public void newGame(){
-    if (!main.gameEnded){
+    if (!control.gameEnded){
       int ans = JOptionPane.showConfirmDialog(null, null, "Game is not over. Do you still want to restart? ",JOptionPane.YES_NO_OPTION);
       if (ans!=0){
         return;
       }
     }
-    main.init();
-    if (!main.timer.isRunning()){
-      main.timer.restart();
+    control.init();
+    if (!control.timer.isRunning()){
+      control.timer.restart();
     }
-    main.spaceCanvas.repaint();
+    control.spaceCanvas.repaint();
   }
 
   public void pauseGame(){
-    if (main.pauseBut.getText().equals("Pause")){
-      main.timer.stop();
-      main.pauseBut.setText("Continue");
+    if (control.pauseBut.getText().equals("Pause")){
+      control.timer.stop();
+      control.pauseBut.setText("Continue");
     }
     else{
-      if (!main.gameEnded){
-        main.timer.restart();
-        main.pauseBut.setText("Pause");
+      if (!control.gameEnded){
+        control.timer.restart();
+        control.pauseBut.setText("Pause");
       }
     }
   }

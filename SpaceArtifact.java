@@ -1,9 +1,9 @@
 public class SpaceArtifact extends SpaceObject{
   private int x, y;//coordinates
 
-  public SpaceArtifact(SpaceGameMain main){
-    x=main.frameSizeX;
-    y=(int)(main.frameSizeY*Math.random());
+  public SpaceArtifact(SpaceController control){
+    x=control.frameSizeX;
+    y=(int)(control.frameSizeY*Math.random());
   }
 
   public SpaceArtifact(int x, int y){

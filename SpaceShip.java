@@ -9,10 +9,10 @@ public class SpaceShip extends SpaceObject{
   public boolean big;
   public boolean friendly;
 
-  public SpaceShip(SpaceGameMain main){
+  public SpaceShip(SpaceController control){
     hitPoint=(int)(10*Math.random())+1;
-    x=main.frameSizeX;
-    y=(int)(main.frameSizeY*Math.random());
+    x=control.frameSizeX;
+    y=(int)(control.frameSizeY*Math.random());
     giveColor();
   }
 

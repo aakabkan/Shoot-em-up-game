@@ -3,10 +3,10 @@ import java.io.*;
 public class SpaceHighScore{
 
   private File highScoreFile;
-  private SpaceGameMain main;
+  private SpaceController control;
 
-  public SpaceHighScore(SpaceGameMain main){
-    this.main = main;
+  public SpaceHighScore(SpaceController control){
+    this.control = control;
     highScoreFile = new File("highscore.txt");
     try{
       if (!highScoreFile.isFile()){
@@ -24,11 +24,11 @@ public class SpaceHighScore{
         highScore = "0";
         writeHighScore(highScore);
       }
-      main.highScoreLabel.setText("High Score: " + highScore);
-      if (main.area.score>Integer.parseInt(highScore)){
-        highScore = Integer.toString(main.area.score);
+      control.highScoreLabel.setText("High Score: " + highScore);
+      if (control.area.score>Integer.parseInt(highScore)){
+        highScore = Integer.toString(control.area.score);
         writeHighScore(highScore);
-        main.highScoreLabel.setText("New High Score: " + main.area.score + "!");
+        control.highScoreLabel.setText("New High Score: " + control.area.score + "!");
       }
       reader.close();
     }

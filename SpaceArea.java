@@ -3,22 +3,16 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class SpaceArea{
-  private SpaceGameMain main;
+  private SpaceController control;
   public SpaceShip us;
   public int shipSize;
   private static final int goldWidth=15;
   private static final int beamWidth=10;
   private static final int initStep=10;//initial number of pixels for a move
   public int step;//number of pixels for a move
-  public LinkedList<SpaceShip> enemies;//all existing enemies
-  public LinkedList<SpaceShip> bigEnemies;//all existing enemies
-  public LinkedList<SpaceArtifact> shots;//the placements of the shots
-  public LinkedList<SpaceShip> destroyed;//the recently destroyed enemies
+  public LinkedList<SpaceShip> enemies, bigEnemies, destroyed, allies;//all existing enemies and allies
+  public LinkedList<SpaceArtifact> shots, boxes, golds, diamonds;//all existing artifacts
   public LinkedList<SpaceBeam> beams;//all existing beams
-  public LinkedList<SpaceArtifact> boxes;//all existing beams
-  public LinkedList<SpaceArtifact> golds;//all existing golds
-  public LinkedList<SpaceArtifact> diamonds;//all existing diamonds
-  public LinkedList<SpaceShip> allies;//all existing allies
   private Graphics g2;
   public boolean updated;//will only allow one shot or move per repaint
   public int score;
@@ -26,9 +20,14 @@ public class SpaceArea{
   private int beamRecentlyCreated;//is zero if no beam has recently been created, otherwise see for how long time it was
   private static final Color ORANGE = new Color(226,128,0);
 
-  public SpaceArea(SpaceGameMain main){
-    us = new SpaceShip(main);
-    this.main = main;
+  public SpaceArea(SpaceController control){
+    this.control = control;
+    createLists();
+    setcontrolditionsForShip();
+    initVariables();
+  }
+
+  public void createLists(){
     enemies = new LinkedList<SpaceShip>();
     bigEnemies = new LinkedList<SpaceShip>();
     shots = new LinkedList<SpaceArtifact>();
@@ -38,14 +37,21 @@ public class SpaceArea{
     golds = new LinkedList<SpaceArtifact>();
     diamonds = new LinkedList<SpaceArtifact>();
     allies = new LinkedList<SpaceShip>();
-    shipSize = main.frameSizeY/25;
-    updated = true;
+  }
+
+  public void setcontrolditionsForShip(){
+    us = new SpaceShip(control);
+    shipSize = control.frameSizeY/25;
     us.setX(20);
-    us.setY(main.frameSizeX/4);
+    us.setY(control.frameSizeX/4);
     us.color=Color.green;
+  }
+
+  public void initVariables(){
+    updated = true;
     score = 0;
     step = initStep;
-    main.gameEnded = false;
+    control.gameEnded = false;
     hasCatchedBox = false;
   }
 
@@ -86,7 +92,7 @@ public class SpaceArea{
         allies.add((SpaceShip)allied);
       }
       else if (rand<1.0/1500){
-        beams.add(new SpaceBeam(main));
+        beams.add(new SpaceBeam(control));
         beamRecentlyCreated = 4;
       }
       else if (rand<1.0/700){
@@ -124,7 +130,7 @@ public class SpaceArea{
     boolean ok = false;
     SpaceObject obj = null;
     while (!ok){
-      obj = ship ? new SpaceShip(main) : new SpaceArtifact(main);
+      obj = ship ? new SpaceShip(control) : new SpaceArtifact(control);
       ok = checkIfEnemyIsTooClose(obj.getY());
     }
     return obj;
@@ -140,7 +146,7 @@ public class SpaceArea{
       Iterator itr = lists[i].descendingIterator();
       while (itr.hasNext()){
         SpaceObject nextObj = (SpaceObject)itr.next();
-        if (nextObj.getX()<main.frameSizeX-width){
+        if (nextObj.getX()<control.frameSizeX-width){
           break;
         }
         if (objY > nextObj.getY()-shipSize && objY < nextObj.getY()+shipSize){
@@ -209,14 +215,14 @@ public class SpaceArea{
   }
 
   private void weDied(){//stops the game.
-      main.timer.stop();
-      main.gameEnded = true;
+      control.timer.stop();
+      control.gameEnded = true;
       g2.setColor(ORANGE);
       g2.fillOval(us.getX(),us.getY()-13*shipSize/25,5*shipSize/4,5*shipSize/4);
-      main.highScoreObj.updateHighScoreLabel();
-      main.pauseBut.setEnabled(false);
-      main.saveBut.setEnabled(false); main.itSave.setEnabled(false);
-      main.saveAsBut.setEnabled(false); main.itQSave.setEnabled(false);
+      control.highScoreObj.updateHighScoreLabel();
+      control.pauseBut.setEnabled(false);
+      control.saveBut.setEnabled(false); control.itSave.setEnabled(false);
+      control.saveAsBut.setEnabled(false); control.itQSave.setEnabled(false);
   }
 
   private void paintExplodedEnemies(){//paints the orange circles.
@@ -236,7 +242,7 @@ public class SpaceArea{
   private void paintShots(){
     g2.setColor(ORANGE);
     if (!shots.isEmpty()){
-      if (shots.getFirst().getX()>main.frameSizeX){
+      if (shots.getFirst().getX()>control.frameSizeX){
         shots.remove(shots.getFirst());
       }
     }
@@ -254,7 +260,7 @@ public class SpaceArea{
       }
       if (beam.light>30){
         g2.setColor(new Color(51,154,255));
-        g2.fillRect(beam.getX(),0,beamWidth,main.frameSizeY);
+        g2.fillRect(beam.getX(),0,beamWidth,control.frameSizeY);
         if (us.getX()+shipSize > beam.getX() && us.getX() < beam.getX()+beamWidth){
           if (!hasCatchedBox){
             weDied();
@@ -318,6 +324,6 @@ public class SpaceArea{
   private void updateScore(int addScore){
     score+=addScore;
     step = initStep + score/100;
-    main.scoreLabel.setText("Score: " + score);
+    control.scoreLabel.setText("Score: " + score);
   }
 }

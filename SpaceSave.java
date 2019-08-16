@@ -5,41 +5,43 @@ import javax.swing.JOptionPane.*;
 import java.text.*;
 
 public class SpaceSave{
-  public SpaceGameMain main;
+  public SpaceController control;
 
-  public SpaceSave(SpaceGameMain main){
-    this.main = main;
+  public SpaceSave(SpaceController control){
+    this.control = control;
   }
 
   public void saveGame(){//if no recent save, calls save as; otherwise saves in the existing file.
-    if (!main.gameEnded){
+    if (!control.gameEnded){
       try{
-        if (main.saveFile==null){
+        if (control.saveFile==null){
           saveAs();
           return;
         }
-        String filename = main.saveFile.getName().substring(0,main.saveFile.getName().length()-3);
+        String filename = control.saveFile.getName().substring(0,control.saveFile.getName().length()-3);
         updateSaves(filename);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(main.saveFile));
-        writer.write(main.area.score + "\n");
-        writer.write(main.area.us.getY() + "\n");
-        LinkedList<SpaceObject>[] lists = new LinkedList[] {main.area.enemies, main.area.shots, main.area.beams, main.area.boxes, main.area.golds, main.area.diamonds, main.area.bigEnemies, main.area.allies};
+        BufferedWriter writer = new BufferedWriter(new FileWriter(control.saveFile));
+        writer.write(control.area.score + "\n");
+        writer.write(control.area.us.getY() + "\n");
+        LinkedList<SpaceObject>[] lists = new LinkedList[] {control.area.enemies, control.area.shots, control.area.beams, control.area.boxes, control.area.golds, control.area.diamonds, control.area.bigEnemies, control.area.allies};
         for (int i=0; i < lists.length; i++){
           writeObjects(writer, lists[i]);
         }
         writer.close();
       }
-      catch (Exception e){}
+      catch (Exception e){
+        System.err.println("Error: "+ e.getMessage());
+      }
     }
   }
 
   public void writeObjects(BufferedWriter writer, LinkedList<SpaceObject> list) throws IOException{//writes to file
     writer.write(list.size() + "\n");
     for (SpaceObject obj : list){
-      if (list.equals(main.area.enemies) || list.equals(main.area.bigEnemies) || list.equals(main.area.allies)){
+      if (list.equals(control.area.enemies) || list.equals(control.area.bigEnemies) || list.equals(control.area.allies)){
         writeEnemy(writer, (SpaceShip)obj);
       }
-      else if (list.equals(main.area.beams)) {
+      else if (list.equals(control.area.beams)) {
         writer.write(obj.getX() + "\n");
       }
       else{
@@ -59,7 +61,7 @@ public class SpaceSave{
   }
 
   public void saveAs() {//asks for the filename for the file to saved, checks if the file exists, and then calls saveGame().
-    if (!main.gameEnded){
+    if (!control.gameEnded){
       try{
         String filename = JOptionPane.showInputDialog(null, "Name file to save: ");
         File saveAsFile = new File("./saves\\" + filename + ".sg");
@@ -78,20 +80,22 @@ public class SpaceSave{
           dir.mkdir();
           saveAsFile.createNewFile();
         }
-        main.saveFile = saveAsFile;
+        control.saveFile = saveAsFile;
         saveGame();
       }
-      catch (Exception e){}
+      catch (Exception e){
+        System.err.println("Error: "+ e.getMessage());
+      }
     }
   }
 
   public void updateSaves(String filename) throws IOException{//put the most recently save file last in the list.
-    main.listener.delete.deleteSaved(filename);
-    main.saveFile.createNewFile();
+    control.listener.delete.deleteSaved(filename);
+    control.saveFile.createNewFile();
     Calendar c1 = Calendar.getInstance();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String time = format.format(c1.getTime());
-    BufferedWriter writer = new BufferedWriter(new FileWriter(main.allSaves,true));
+    BufferedWriter writer = new BufferedWriter(new FileWriter(control.allSaves,true));
     writer.write("\n" + filename + " " + time);
     writer.close();
   }
