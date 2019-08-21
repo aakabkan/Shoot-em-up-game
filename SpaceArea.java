@@ -23,7 +23,7 @@ public class SpaceArea{
   public SpaceArea(SpaceController control){
     this.control = control;
     createLists();
-    setcontrolditionsForShip();
+    setConditionsForShip();
     initVariables();
   }
 
@@ -39,7 +39,7 @@ public class SpaceArea{
     allies = new LinkedList<SpaceShip>();
   }
 
-  public void setcontrolditionsForShip(){
+  public void setConditionsForShip(){
     us = new SpaceShip(control);
     shipSize = control.frameSizeY/25;
     us.setX(20);
