@@ -301,7 +301,7 @@ public class SpaceArea{
               g2.fillPolygon(new int[] {art.getX(),art.getX(),art.getX()+goldWidth/2,art.getX()+goldWidth,art.getX()+goldWidth,art.getX()+goldWidth/2},new int[] {art.getY(),art.getY()+goldWidth/2,art.getY()+goldWidth,art.getY()+goldWidth/2,art.getY(),art.getY()-goldWidth/2},6);
             }
             if (us.getY() < art.getY()+5*shipSize/12+(list.equals(diamonds) ? goldWidth/2 : 0) && us.getY() > art.getY()-goldWidth-shipSize/4 && us.getX() > art.getX()-shipSize/2 && us.getX() < art.getX()+goldWidth+shipSize/2){
-              toRemove = catchedArtifact(toRemove,art,false);
+              toRemove = catchedArtifact(toRemove,art,list.equals(diamonds));
             }
         }
         art.setX(art.getX()-step);
