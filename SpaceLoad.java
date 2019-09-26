@@ -56,6 +56,7 @@ public class SpaceLoad{
           control.init();
           control.area.score = Integer.parseInt(reader.readLine());
           control.scoreLabel.setText("Score: " + control.area.score);
+          control.area.step = control.area.initStep + control.area.score/100;
           control.area.us.setY(Integer.parseInt(reader.readLine()));
           readEnemies(reader, control.area.enemies);
           readArtifacts(reader, control.area.shots);

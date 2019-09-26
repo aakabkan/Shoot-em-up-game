@@ -8,7 +8,7 @@ public class SpaceArea{
   public int shipSize;
   private static final int goldWidth=15;
   private static final int beamWidth=10;
-  private static final int initStep=10;//initial number of pixels for a move
+  public static final int initStep=10;//initial number of pixels for a move
   public int step;//number of pixels for a move
   public LinkedList<SpaceShip> enemies, bigEnemies, destroyed, allies;//all existing enemies and allies
   public LinkedList<SpaceArtifact> shots, boxes, golds, diamonds;//all existing artifacts
@@ -111,7 +111,7 @@ public class SpaceArea{
       }
       else if (rand<1.0/4){
         SpaceObject enemy = createObject(true);
-        if (Math.random()<1.0/4000){
+        if (Math.random()<1.0/2500){
           ((SpaceShip)enemy).hitPoint = 5*((SpaceShip)enemy).hitPoint + 50;
           ((SpaceShip)enemy).big = true;
           bigEnemies.add((SpaceShip)enemy);
@@ -200,7 +200,7 @@ public class SpaceArea{
               updateScore(100);
             }
             else if (enemy.friendly){
-              updateScore(score>150 ? 150 : score);
+              updateScore(score>150 ? -150 : -score);
             }
             else{
               updateScore(1);
@@ -247,7 +247,7 @@ public class SpaceArea{
       }
     }
     for (SpaceArtifact shot : shots){
-      g2.fillOval(shot.getX(),shot.getY(),step/3,step/3);
+      g2.fillOval(shot.getX(),shot.getY(),initStep/3,initStep/3);
       shot.setX(shot.getX()+step);
     }
   }
